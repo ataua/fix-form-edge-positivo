@@ -1,14 +1,17 @@
 
-const formFields = {	// Add your form field selectors and default values here
+// Add your form field selectors and default values here
+const formFields = {	
 	'input#nomeCliente': 'Não informado',
     	'input#mailCliente': 'sememail@positivo.com.br',
 	'input#rgCliente': '0',
 	'input#valor': 30,
 	'input#nfCompra': 0,
-	'input#atendimento_ComentTroca': 'Troca direta'
+	'textarea#atendimento_ComentTroca': 'Troca direta',
+	'textarea#atendimento_ComentChamada': '> Sintomas:\n- \n\n> Ações:\n- \n\n> Solução:\n- '
 };
 
-function checkName({target}){	// Verifica se o nome tem 0 ou 1 elemento (ou seja, sem sobrenome)
+function checkName({target}){
+	// Verifica se o nome tem 0 ou 1 elemento (ou seja, sem sobrenome)	
 	const res = target.value.trim().split(" ");
 	if (res.length <= 1){
 		if (res[0] == ''){
@@ -20,8 +23,8 @@ function checkName({target}){	// Verifica se o nome tem 0 ou 1 elemento (ou seja
 	}
 }
 
-
-function autoFillForm() {	// Function to fill empty form fields with default values
+// Function to fill empty form fields with default values
+function autoFillForm() {	
 
 	// Iterate through form fields
 	for (const [selector, defaultValue] of Object.entries(formFields)) {
@@ -33,6 +36,9 @@ function autoFillForm() {	// Function to fill empty form fields with default val
 
 			if (field.id == 'nomeCliente') {
 				field.addEventListener('change', checkName)
+			}
+			if (field.id == 'atendimento_ComentChamada'){ 
+				field.rows=12
 			} else {
 				field.addEventListener('change', ()=>{
 					if (!field.value || !field.value.trim().length) {
@@ -43,16 +49,17 @@ function autoFillForm() {	// Function to fill empty form fields with default val
 		}
 	}
 
-	setTimeout(()=>{	// Espera um pouco pra garantir a atualização do DOM
+	// Espera um pouco pra garantir a atualização do DOM
+	setTimeout(()=>{	
 		const fone = Array.from(document.querySelectorAll('#div_dadosChamada span.text'))
 			.filter(s => s.innerText == 'TELEFONE')
 		!!fone.length && fone[0].parentElement.click()
 	}, 300)
 }
 
-
-if (document.readyState === "loading") {	// Run the auto-fill function when the page loads
+// Run the auto-fill function when the page loads
+if (document.readyState === "loading") {	
     document.addEventListener("DOMContentLoaded", autoFillForm);
-} else {
-    autoFillForm(); // O DOM já está carregado
+} else {	// O DOM já está carregado
+    autoFillForm(); 
 }

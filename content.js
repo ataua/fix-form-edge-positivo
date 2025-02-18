@@ -31,7 +31,7 @@ const claimWarranty = () => {
 		comment.value += 'chamado atp cfe termo de garantia\n- ciente perda de dados'
 	}
 	setTimeout(()=>{
-		const garantiaVarejo = spans.filter(s => s.innerText == 'GARANTIA VAREJO');
+		const garantiaVarejo = Array.from(document.querySelectorAll('span.text')).filter(s => s.innerText == 'GARANTIA VAREJO');
 		!!garantiaVarejo && garantiaVarejo[0].click() 
 	}, 1000)
 }

@@ -32,7 +32,7 @@ const claimWarranty = () => {
 	}
 	setTimeout(()=>{
 		const garantiaVarejo = spans.filter(s => s.innerText == 'GARANTIA VAREJO');
-		!!garantiaVarejo && garantiaVarejo[0].parentElement.click() 
+		!!garantiaVarejo && garantiaVarejo[0].click() 
 	}, 1000)
 }
 

@@ -22,7 +22,7 @@ const checkName = ({target}) => {
     }
 }
 
-const claimWwarranty = () => {
+const claimWarranty = () => {
 	const spans = Array.from(document.querySelectorAll('span.text'))
 	const garantia = spans.filter(s => s.innerText.includes('E0046'));
 	!!garantia && garantia[0].parentElement.click() 
@@ -42,7 +42,7 @@ const createButton = () => {
         const newButton = document.createElement('button');
         newButton.innerText = 'Garantia';
 		newButton.className = 'btn btn-blue';
-        newButton.addEventListener('click', claimWwarranty);
+        newButton.addEventListener('click', claimWarranty);
         targetDiv.insertBefore(newButton, targetDiv.firstChild);
     }
 };

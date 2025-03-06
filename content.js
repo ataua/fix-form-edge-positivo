@@ -32,7 +32,7 @@ const claimWarranty = () => {
 	}
 	setTimeout(()=>{
 		const garantiaVarejo = Array.from(document.querySelectorAll('span.text')).filter(s => s.innerText == 'GARANTIA VAREJO');
-		!!garantiaVarejo && garantiaVarejo[0].click() 
+		!!garantiaVarejo.length && garantiaVarejo[0].click() 
 	}, 1000)
 }
 
@@ -82,7 +82,7 @@ const autoFillForm = () => {
         const preOs = spans.filter(s => s.innerHTML == ' ABERTURA DE PRE-OS');
         !!preOs.length && preOs[0].parentElement.click()
 
-        const crp = spans.filter(s => s.innerText.includes(' CRP'));
+        const crp = spans.filter(s => s.innerText.trim() == 'CRP');
         !!crp.length && crp[0].parentElement.click()
     }, 200)
 }

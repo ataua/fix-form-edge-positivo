@@ -22,7 +22,8 @@ const checkName = ({target}) => {
     }
 }
 
-const claimWarranty = () => {
+const claimWarranty = (ev) => {
+    ev.preventDefault()
 	const spans = Array.from(document.querySelectorAll('span.text'))
 	const garantia = spans.filter(s => s.innerText.includes('E0046'));
 	!!garantia && garantia[0].parentElement.click() 

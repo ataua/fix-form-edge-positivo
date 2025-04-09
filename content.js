@@ -28,7 +28,7 @@ const claimWarranty = (ev) => {
 	const garantia = spans.filter(s => s.innerText.includes('E0046'));
 	!!garantia && garantia[0].parentElement.click() 
 	const comment = document.querySelector('textarea#atendimento_ComentChamada')
-	if (!!comment && !comment.value.toLowerCase().includes('chamado atp cfe')){
+	if (!!comment && (!comment.value.toLowerCase().includes('chamado atp cfe') || !comment.value.toLowerCase().includes('orçamento'))){
 		comment.value += 'chamado atp cfe termo de garantia\n- ciente perda de dados'
 	}
 	setTimeout(()=>{
@@ -37,14 +37,36 @@ const claimWarranty = (ev) => {
 	}, 1000)
 }
 
-const createButton = () => {
+const noSN = (ev) => {
+    ev.preventDefault()
+	const spans = Array.from(document.querySelectorAll('span.text'))
+	const insuficiente = spans.filter(s => s.innerText.includes('DADOS INSUFICIENTES'));
+	!!insuficiente && insuficiente[0].parentElement.click() 
+    const danificado = spans.filter(b => b.innerHTML.includes("NÃO IDENTIFICADO"))
+    !!danificado.length && danificado[0].click() 
+    const comment = document.querySelector('textarea#atendimento_ComentChamada')
+    document.querySelector('input#dataCompra').value = document.querySelector('input#numDiasPend').value
+    if (!!comment && (!comment.value.toLowerCase().includes('sem ns'))){
+		comment.value = '> Sintomas:\n- Sem NS\n- Sem aparelho em mãos\n\n> Solução\n- Volta a ligar'
+	}
+}
+
+const createButtons = () => {
     const targetDiv = document.querySelector('#div_dadosChamada .card-title div');
-    if (targetDiv) {
-        const newButton = document.createElement('button');
-        newButton.innerText = 'Garantia';
-		newButton.className = 'btn btn-blue';
-        newButton.addEventListener('click', claimWarranty);
-        targetDiv.insertBefore(newButton, targetDiv.firstChild);
+    if (!!targetDiv) {
+        const newButtonGarantia = document.createElement('button');
+        newButtonGarantia.style.marginLeft = '4px';
+        newButtonGarantia.innerText = 'Garantia';
+		newButtonGarantia.className = 'btn btn-blue';
+        newButtonGarantia.addEventListener('click', claimWarranty);
+        targetDiv.insertBefore(newButtonGarantia, targetDiv.firstChild);
+
+        const newButtonNoSN = document.createElement('button');
+        newButtonNoSN.style.marginLeft = '4px';
+        newButtonNoSN.innerText = 'Sem NS';
+        newButtonNoSN.className = 'btn btn-blue';
+        newButtonNoSN.addEventListener('click', noSN);
+        targetDiv.insertBefore(newButtonNoSN, targetDiv.firstChild);
     }
 };
 
@@ -90,7 +112,7 @@ const autoFillForm = () => {
 
 const run = () => {
 	autoFillForm();
-	createButton();
+	createButtons();
 }
 
 // Executa a função de preenchimento automático quando a página carrega

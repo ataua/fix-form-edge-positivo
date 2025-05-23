@@ -34,7 +34,8 @@ const checkIsOnSite = () => {
         if (!!modalidade && modalidade.value.toLowerCase().includes('on site')) {
             let spans = Array.from(document.querySelectorAll('span.text'))
             document.querySelector('#clientes_cpf').value = document.querySelector('#clienteSAP_cnpj').value
-            document.querySelector('#carregarDados').click()
+            const carregar = document.querySelector('#carregarDados')
+            !!carregar && carregar.click()
             const situacao = spans.find(s => s.textContent.toLowerCase().includes('(e0001)'))
             !!situacao && situacao.parentElement.click()
             !!situacao && setTimeout(() => {
@@ -141,9 +142,10 @@ const autoFillForm = () => {
 
 const run = () => {
     autoFillForm();
-    fixWidth()
+    fixWidth();
     createButtons();
-    checkIsOnSite()
+    checkIsOnSite();
+    document.querySelector('textarea#atendimento_ComentChamada').focus()
 }
 
 // Executa a função de preenchimento automático quando a página carrega

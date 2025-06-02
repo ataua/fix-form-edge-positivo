@@ -9,6 +9,14 @@ const formFields = {
     'textarea#atendimento_ComentChamada': '> Sintomas:\n- \n\n> Ações:\n- \n\n> Solução:\n- '
 };
 
+const noItem = () => {
+    const spans = Array.from(document.querySelectorAll('span.text'))
+    const danificado = spans.find(b => b.textContent.includes("NÃO IDENTIFICADO"))
+    !!danificado && danificado.click()   
+}
+
+const today = () => document.querySelector('input#dataCompra').value = document.querySelector('input#numDiasPend').value
+
 const fixWidth = () => {
     ['col-lg-offset-1', 'col-lg-10'].forEach(cl => document.querySelectorAll(`.${cl}`).forEach(c => c.classList.remove(cl)))
     const tt = document.querySelector('.card-title>div')
@@ -18,7 +26,7 @@ const fixWidth = () => {
 const checkName = ({ target }) => {
     // Verifica se o nome tem 0 ou 1 elemento (ou seja, sem sobrenome)	
     const res = target.value.trim().split(" ");
-    if (res <= 1) {
+    if (res.length <= 1) {
         if (res[0] == '') {
             target.value = "Não informado";
         } else {
@@ -44,7 +52,6 @@ const checkIsOnSite = () => {
                 !!solicita && solicita.parentElement.click()
             }, 1200)
             clearInterval(isOnSite)
-
         }
     }
     const isOnSite = setInterval(setIsOnSite, 1000)
@@ -54,29 +61,34 @@ const claimWarranty = (ev) => {
     ev.preventDefault()
     const spans = Array.from(document.querySelectorAll('span.text'))
     const garantia = spans.find(s => s.textContent.includes('E0046'));
-    !!garantia && garantia.parentElement.click()
+    garantia?.parentElement?.click()
     const comment = document.querySelector('textarea#atendimento_ComentChamada')
     if (!!comment && (!comment.value.toLowerCase().includes('chamado atp cfe') && !comment.value.toLowerCase().includes('orçamento'))) {
         comment.value += 'chamado atp cfe termo de garantia\n- ciente perda de dados'
     }
     setTimeout(() => {
         const garantiaVarejo = Array.from(document.querySelectorAll('span.text')).find(s => s.textContent == 'GARANTIA VAREJO');
-        !!garantiaVarejo && garantiaVarejo.click()
+        garantiaVarejo?.click()
     }, 1000)
 }
 
 const noSN = (ev) => {
     ev.preventDefault()
     const spans = Array.from(document.querySelectorAll('span.text'))
-    const insuficiente = spans.find(s => s.textContent.includes('DADOS INSUFICIENTES'));
-    !!insuficiente && insuficiente.parentElement.click()
-    const danificado = spans.find(b => b.textContent.includes("NÃO IDENTIFICADO"))
-    !!danificado && danificado.click()
+    setTimeout(()=>{
+        const posVendas = spans.find(s => s.textContent.includes('E0025'));
+        posVendas?.parentElement?.click()
+        const insuficiente = spans.find(s => s.textContent.includes('DADOS INSUFICIENTES'));
+        insuficiente?.parentElement?.click()
+        const danificado = spans.find(b => b.textContent.includes("NÃO IDENTIFICADO"))
+        danificado?.click()
+    }, 1100)
     const comment = document.querySelector('textarea#atendimento_ComentChamada')
-    document.querySelector('input#dataCompra').value = document.querySelector('input#numDiasPend').value
     if (!!comment && (!comment.value.toLowerCase().includes('sem ns'))) {
-        comment.value = '> Sintomas:\n-\n\n> Ações:\n- Sem NS\n- Sem aparelho em mãos\n\n> Solução:\n- Volta a ligar'
-    }
+        comment.value += 'Sem NS\n- Sem aparelho em mãos'
+    } 
+    noItem()
+    today()
 }
 
 const createButtons = () => {
@@ -96,6 +108,15 @@ const createButtons = () => {
         newButtonNoSN.addEventListener('click', noSN);
         targetDiv.insertBefore(newButtonNoSN, targetDiv.firstChild);
     }
+
+    document.querySelector('#ligacaoCaiu')?.addEventListener('click', ()=>{
+        const comment = document.querySelector('textarea#atendimento_ComentChamada')
+        if (!!comment && (!comment.value.toLowerCase().includes('caiu'))) {
+            comment.value += 'Ligação muda / caiu'
+        }
+        today()
+        noItem()
+    })
 };
 
 // Função para preencher campos de formulário vazios com valores padrão
@@ -105,7 +126,7 @@ const autoFillForm = () => {
     for (const [selector, defaultValue] of Object.entries(formFields)) {
         const field = document.querySelector(selector);
         if (!!field) {
-            if (!field.value.trim()) {
+            if (!field.value.trim().legth) {
                 field.value = defaultValue;
             }
 
@@ -115,7 +136,7 @@ const autoFillForm = () => {
                 field.rows = 12
             } else {
                 field.addEventListener('change', () => {
-                    if (!field.value || !field.value.trim()) {
+                    if (!field.value.trim().length) {
                         field.value = defaultValue;
                     }
                 })
@@ -129,13 +150,13 @@ const autoFillForm = () => {
         let spans = Array.from(document.querySelectorAll('span.text'))
 
         const telefone = spans.find(s => s.textContent.trim() == ('TELEFONE'))
-        !!telefone && telefone.parentElement.click()
+        telefone?.parentElement?.click()
 
         const preOs = spans.find(s => s.textContent.trim().includes('ABERTURA DE PRE-OS'))
-        !!preOs && preOs.parentElement.click()
+        preOs?.parentElement?.click()
 
         const crp = spans.find(s => s.textContent.trim() == ('CRP'))
-        !!crp && crp.parentElement.click()
+        crp?.parentElement?.click()
 
     }, 200)
 }
@@ -145,7 +166,7 @@ const run = () => {
     fixWidth();
     createButtons();
     checkIsOnSite();
-    document.querySelector('textarea#atendimento_ComentChamada').focus()
+    document.querySelector('textarea#atendimento_ComentChamada')?.focus()
 }
 
 // Executa a função de preenchimento automático quando a página carrega

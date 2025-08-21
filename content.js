@@ -57,16 +57,19 @@ const checkIsOnSite = () => {
             document.querySelector('#clientes_cpf').value = document.querySelector('#clienteSAP_cnpj')?.value
             document.querySelector('#carregarDados')?.click()
             selectSpan('has', '(e0001)')
-            setTimeout(() => selectSpan('has', 'solicitação de atendimento on-site'), 1200)
-            clearInterval(isOnSite)
+            setTimeout(() => {
+                selectSpan('has', 'solicitação de atendimento on-site')
+                clearInterval(isOnSite)
+            }, 1200)
         }
     }
     const isOnSite = setInterval(setIsOnSite, 1000)
+    setTimeout(() => clearInterval(isOnSite), 10000)
 }
 
 const claimWarranty = (ev) => {
     ev.preventDefault()
-    selectSpan('has', '(e0001)')
+    selectSpan('has', '(e0046)')
     const comment = document.querySelector('textarea#atendimento_ComentChamada')
     if (!!comment && (!comment.value.toLowerCase().includes('chamado atp cfe') && !comment.value.toLowerCase().includes('orçamento'))) {
         comment.value += 'chamado atp cfe termo de garantia\n- ciente perda de dados'
@@ -139,7 +142,6 @@ const autoFillForm = () => {
                     }
                 })
             }
-
         }
     }
 

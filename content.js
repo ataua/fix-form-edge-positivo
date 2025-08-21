@@ -24,12 +24,6 @@ const selectSpan = (relation, text) => {
     }
 }
 
-const noItem = () => {
-    const spans = Array.from(document.querySelectorAll('span.text'))
-    const danificado = spans.find(b => b.textContent.includes("NÃO IDENTIFICADO"))
-    !!danificado && danificado.click()   
-}
-
 const today = () => document.querySelector('input#dataCompra').value = document.querySelector('input#numDiasPend').value
 
 const fixWidth = () => {
@@ -52,10 +46,7 @@ const checkName = ({ target }) => {
 }
 
 const setSintoma = () => {
-    let spans = Array.from(document.querySelectorAll('span.text'))
-    document.querySelector('#ligacaoCaiu')?.addEventListener('click', ()=>{
-        spans.find(s=>s.textContent == ('DANIFICADO'))?.click()
-    })
+    document.querySelector('#ligacaoCaiu')?.addEventListener('click', ()=>selectSpan('is', 'danificado'))
 }
 
 
@@ -63,17 +54,10 @@ const checkIsOnSite = () => {
     const setIsOnSite = () => {
         const modalidade = document.querySelector('#modalidade')
         if (!!modalidade && modalidade.value.toLowerCase().includes('on site')) {
-            let spans = Array.from(document.querySelectorAll('span.text'))
-            document.querySelector('#clientes_cpf').value = document.querySelector('#clienteSAP_cnpj').value
-            const carregar = document.querySelector('#carregarDados')
-            !!carregar && carregar.click()
-            const situacao = spans.find(s => s.textContent.toLowerCase().includes('(e0001)'))
-            !!situacao && situacao.parentElement.click()
-            !!situacao && setTimeout(() => {
-                let spans = Array.from(document.querySelectorAll('span.text'))
-                const solicita = spans.find(s => s.textContent.toLowerCase().includes('solicitação de atendimento on-site'))
-                !!solicita && solicita.parentElement.click()
-            }, 1200)
+            document.querySelector('#clientes_cpf').value = document.querySelector('#clienteSAP_cnpj')?.value
+            document.querySelector('#carregarDados')?.click()
+            selectSpan('has', '(e0001)')
+            setTimeout(() => selectSpan('has', 'solicitação de atendimento on-site'), 1200)
             clearInterval(isOnSite)
         }
     }
@@ -82,35 +66,26 @@ const checkIsOnSite = () => {
 
 const claimWarranty = (ev) => {
     ev.preventDefault()
-    const spans = Array.from(document.querySelectorAll('span.text'))
-    const garantia = spans.find(s => s.textContent.includes('E0046'));
-    garantia?.parentElement?.click()
+    selectSpan('has', '(e0001)')
     const comment = document.querySelector('textarea#atendimento_ComentChamada')
     if (!!comment && (!comment.value.toLowerCase().includes('chamado atp cfe') && !comment.value.toLowerCase().includes('orçamento'))) {
         comment.value += 'chamado atp cfe termo de garantia\n- ciente perda de dados'
     }
-    setTimeout(() => {
-        const garantiaVarejo = Array.from(document.querySelectorAll('span.text')).find(s => s.textContent == 'GARANTIA VAREJO');
-        garantiaVarejo?.click()
-    }, 1000)
+    setTimeout(() => selectSpan('is', 'garantia varejo'), 1000)
 }
 
 const noSN = (ev) => {
     ev.preventDefault()
-    const spans = Array.from(document.querySelectorAll('span.text'))
     setTimeout(()=>{
-        const posVendas = spans.find(s => s.textContent.includes('E0025'));
-        posVendas?.parentElement?.click()
-        const insuficiente = spans.find(s => s.textContent.includes('DADOS INSUFICIENTES'));
-        insuficiente?.parentElement?.click()
-        const danificado = spans.find(b => b.textContent.includes("NÃO IDENTIFICADO"))
-        danificado?.click()
+        selectSpan('has', 'e0025')
+        selectSpan('has', 'dados insuficientes')
+        selectSpan('has', 'não identificado')
     }, 1100)
     const comment = document.querySelector('textarea#atendimento_ComentChamada')
     if (!!comment && (!comment.value.toLowerCase().includes('sem ns'))) {
         comment.value += 'Sem NS\n- Sem aparelho em mãos'
     } 
-    noItem()
+    selectSpan('is', 'não identificado')
     today()
 }
 
@@ -138,7 +113,7 @@ const createButtons = () => {
             comment.value += 'Ligação muda / caiu'
         }
         today()
-        noItem()
+        selectSpan('is', 'não identificado')
     })
 };
 
@@ -170,17 +145,9 @@ const autoFillForm = () => {
 
     // Espera um pouco para garantir a atualização do DOM
     setTimeout(() => {
-        let spans = Array.from(document.querySelectorAll('span.text'))
-
-        const telefone = spans.find(s => s.textContent.trim() == ('TELEFONE'))
-        telefone?.parentElement?.click()
-
-        const preOs = spans.find(s => s.textContent.trim().includes('ABERTURA DE PRE-OS'))
-        preOs?.parentElement?.click()
-
-        const crp = spans.find(s => s.textContent.trim() == ('CRP'))
-        crp?.parentElement?.click()
-
+        selectSpan('is', 'telefone')
+        selectSpan('has', 'abertura de pre-os')
+        selectSpan('is', 'crp')
     }, 200)
 }
 

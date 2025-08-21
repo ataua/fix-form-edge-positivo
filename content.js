@@ -9,6 +9,21 @@ const formFields = {
     'textarea#atendimento_ComentChamada': '> Sintomas:\n- \n\n> Ações:\n- \n\n> Solução:\n- '
 };
 
+const selectSpan = (relation, text) => {
+    // clica no span que tem conteúdo textual buscado
+    const spans = Array.from(document.querySelectorAll('span.text'))
+    switch (relation) {
+        case 'is': // conteúdo exatamente igual
+            spans.find(b => b.textContent.toLowerCase() == text)?.click() 
+            break
+        case 'has': // parte do texto
+            spans.find(b => b.textContent.toLowerCase().includes(text))?.click() 
+            break
+        default:
+            console.warn('use: selectSpan(relation = "has" | "is", text)')
+    }
+}
+
 const noItem = () => {
     const spans = Array.from(document.querySelectorAll('span.text'))
     const danificado = spans.find(b => b.textContent.includes("NÃO IDENTIFICADO"))
@@ -26,7 +41,7 @@ const fixWidth = () => {
 const checkName = ({ target }) => {
     // Verifica se o nome tem 0 ou 1 elemento (ou seja, sem sobrenome)	
     const res = target.value.trim().split(" ");
-    if (res.length <= 1) {
+    if (!res || res.length <= 1) {
         if (res[0] == '') {
             target.value = "Não informado";
         } else {
@@ -35,6 +50,14 @@ const checkName = ({ target }) => {
         }
     }
 }
+
+const setSintoma = () => {
+    let spans = Array.from(document.querySelectorAll('span.text'))
+    document.querySelector('#ligacaoCaiu')?.addEventListener('click', ()=>{
+        spans.find(s=>s.textContent == ('DANIFICADO'))?.click()
+    })
+}
+
 
 const checkIsOnSite = () => {
     const setIsOnSite = () => {
@@ -126,7 +149,7 @@ const autoFillForm = () => {
     for (const [selector, defaultValue] of Object.entries(formFields)) {
         const field = document.querySelector(selector);
         if (!!field) {
-            if (!field.value.trim().legth) {
+            if (!field.value || !field.value.trim()) {
                 field.value = defaultValue;
             }
 

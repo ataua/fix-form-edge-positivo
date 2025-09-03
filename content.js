@@ -24,6 +24,18 @@ const selectSpan = (relation, text) => {
     }
 }
 
+const noZeroCPF = () => {
+    document.querySelector('#cpfcnpj')?.addEventListener('input', ({target})=>{
+        if (target?.value == 0){
+            document.querySelector('#pesq_os button').disabled = true
+            document.querySelector('#pesq_os button').style.cursor = 'not-allowed !important'
+        } else {
+            document.querySelector('#pesq_os button').disabled = false
+            document.querySelector('#pesq_os button').style.cursor = 'default'
+        }
+    })
+}
+
 const today = () => document.querySelector('input#dataCompra').value = document.querySelector('input#numDiasPend').value
 
 const fixWidth = () => {
@@ -156,6 +168,7 @@ const autoFillForm = () => {
 const run = () => {
     autoFillForm();
     fixWidth();
+    noZeroCPF()
     createButtons();
     checkIsOnSite();
     document.querySelector('textarea#atendimento_ComentChamada')?.focus()

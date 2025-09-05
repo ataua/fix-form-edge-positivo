@@ -1,5 +1,7 @@
-// Adicione seus seletores de campo de formulário e valores padrão aqui
 const formFields = {
+    /**
+     * Adicione seus seletores de campo de formulário e valores padrão aqui
+     **/ 
     'input#nomeCliente': 'Não informado',
     'input#mailCliente': 'sememail@positivo.com.br',
     'input#rgCliente': '0',
@@ -10,14 +12,16 @@ const formFields = {
 };
 
 const selectSpan = (relation, text) => {
-    // clica no span que tem conteúdo textual buscado
-    const spans = Array.from(document.querySelectorAll('span.text'))
+    /**
+     * clica no span que tem conteúdo textual buscado
+     **/
+   const spans = Array.from(document.querySelectorAll('span.text'))
     switch (relation) {
         case 'is': // conteúdo exatamente igual
-            spans.find(b => b.textContent.toLowerCase() == text)?.click() 
+            spans.find(b => b.textContent.toLowerCase().trim() == text)?.click() 
             break
         case 'has': // parte do texto
-            spans.find(b => b.textContent.toLowerCase().includes(text))?.click() 
+            spans.find(b => b.textContent.toLowerCase().trim().includes(text))?.click() 
             break
         default:
             console.warn('use: selectSpan(relation = "has" | "is", text)')
@@ -25,6 +29,9 @@ const selectSpan = (relation, text) => {
 }
 
 const noZeroCPF = () => {
+    /**
+     * Desabilita o botão de pesquisa se o CPF/CNPJ for 0
+     **/
     document.querySelector('#cpfcnpj')?.addEventListener('input', ({target})=>{
         if (target?.value == 0){
             document.querySelector('#pesq_os button').disabled = true
@@ -36,16 +43,23 @@ const noZeroCPF = () => {
     })
 }
 
+// Função para definir a data de hoje em um campo de data
 const today = () => document.querySelector('input#dataCompra').value = document.querySelector('input#numDiasPend').value
 
+
 const fixWidth = () => {
+    /**
+     * Remove classes que limitam a largura do formulário
+     */
     ['col-lg-offset-1', 'col-lg-10'].forEach(cl => document.querySelectorAll(`.${cl}`).forEach(c => c.classList.remove(cl)))
     const tt = document.querySelector('.card-title>div')
     if (!!tt) tt.style.width = ''
 }
 
 const checkName = ({ target }) => {
-    // Verifica se o nome tem 0 ou 1 elemento (ou seja, sem sobrenome)	
+    /**
+     * Verifica se o nome tem sobrenome
+     **/
     const res = target.value.trim().split(" ");
     if (!res || res.length <= 1) {
         if (res[0] == '') {
@@ -58,11 +72,17 @@ const checkName = ({ target }) => {
 }
 
 const setSintoma = () => {
+    /**
+     * Define o sintoma como "danificado" ao clicar no botão de ligação caiu / muda
+     **/
     document.querySelector('#ligacaoCaiu')?.addEventListener('click', ()=>selectSpan('is', 'danificado'))
 }
 
 
 const checkIsOnSite = () => {
+    /**
+     * Verifica se a modalidade é on site e seleciona os spans corretos
+     **/
     const setIsOnSite = () => {
         const modalidade = document.querySelector('#modalidade')
         if (!!modalidade && modalidade.value.toLowerCase().includes('on site')) {
@@ -70,7 +90,7 @@ const checkIsOnSite = () => {
             document.querySelector('#carregarDados')?.click()
             selectSpan('has', '(e0001)')
             setTimeout(() => {
-                selectSpan('has', 'solicitação de atendimento on-site')
+                selectSpan('is', 'solicitação de atendimento on-site')
                 clearInterval(isOnSite)
             }, 1200)
         }
@@ -80,6 +100,9 @@ const checkIsOnSite = () => {
 }
 
 const claimWarranty = (ev) => {
+    /**
+     * Clica nos spans corretos e adiciona comentário padrão para chamados de garantia
+     **/
     ev.preventDefault()
     selectSpan('has', '(e0046)')
     const comment = document.querySelector('textarea#atendimento_ComentChamada')
@@ -90,11 +113,14 @@ const claimWarranty = (ev) => {
 }
 
 const noSN = (ev) => {
+    /**
+     * Clica nos spans corretos e adiciona comentário padrão para chamados sem número de série
+     **/
     ev.preventDefault()
     setTimeout(()=>{
         selectSpan('has', 'e0025')
-        selectSpan('has', 'dados insuficientes')
-        selectSpan('has', 'não identificado')
+        selectSpan('is', 'dados insuficientes')
+        selectSpan('is', 'não identificado')
     }, 1100)
     const comment = document.querySelector('textarea#atendimento_ComentChamada')
     if (!!comment && (!comment.value.toLowerCase().includes('sem ns'))) {
@@ -105,6 +131,9 @@ const noSN = (ev) => {
 }
 
 const createButtons = () => {
+    /**
+     * Cria botões extras na interface para ações rápidas
+     **/
     const targetDiv = document.querySelector('#div_dadosChamada .card-title div');
     if (!!targetDiv) {
         const newButtonGarantia = document.createElement('button');
@@ -121,25 +150,18 @@ const createButtons = () => {
         newButtonNoSN.addEventListener('click', noSN);
         targetDiv.insertBefore(newButtonNoSN, targetDiv.firstChild);
     }
-
-    document.querySelector('#ligacaoCaiu')?.addEventListener('click', ()=>{
-        const comment = document.querySelector('textarea#atendimento_ComentChamada')
-        if (!!comment && (!comment.value.toLowerCase().includes('caiu'))) {
-            comment.value += 'Ligação muda / caiu'
-        }
-        today()
-        selectSpan('is', 'não identificado')
-    })
 };
 
-// Função para preencher campos de formulário vazios com valores padrão
 const autoFillForm = () => {
+    /**
+     * Preenche os campos do formulário com valores padrão
+     **/
 
     // Itera através dos campos do formulário
     for (const [selector, defaultValue] of Object.entries(formFields)) {
         const field = document.querySelector(selector);
         if (!!field) {
-            if (!field.value || !field.value.trim()) {
+            if (!String(field.value).trim().length) {
                 field.value = defaultValue;
             }
 
@@ -149,7 +171,7 @@ const autoFillForm = () => {
                 field.rows = 12
             } else {
                 field.addEventListener('change', () => {
-                    if (!field.value.trim().length) {
+                    if (!String(field.value).trim().length) {
                         field.value = defaultValue;
                     }
                 })
@@ -157,11 +179,21 @@ const autoFillForm = () => {
         }
     }
 
+    document.querySelector('#ligacaoCaiu')?.addEventListener('click', ()=>{
+        const comment = document.querySelector('textarea#atendimento_ComentChamada')
+        if (!!comment && (!comment.value.toLowerCase().includes('caiu'))) {
+            comment.value += '\n- Ligação muda / caiu'
+        }
+        today()
+        selectSpan('is', 'não identificado')
+    })
+
     // Espera um pouco para garantir a atualização do DOM
     setTimeout(() => {
         selectSpan('is', 'telefone')
-        selectSpan('has', 'abertura de pre-os')
+        selectSpan('is', 'abertura de pre-os')
         selectSpan('is', 'crp')
+        selectSpan('is', 'fabrica - falha do produto')
     }, 200)
 }
 

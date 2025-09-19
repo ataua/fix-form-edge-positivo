@@ -150,6 +150,15 @@ const createButtons = () => {
         newButtonNoSN.addEventListener('click', noSN);
         targetDiv.insertBefore(newButtonNoSN, targetDiv.firstChild);
     }
+    const targetDiv1 = document.querySelector('#cadastro .card-title:first-of-type');
+    if (!!targetDiv1) {
+        const newButtonReset = document.createElement('button');
+        newButtonReset.style.margin = '-10px 20px';
+        newButtonReset.innerHTML = '&orarr;';
+        newButtonReset.className = 'btn btn-blue';
+        newButtonReset.addEventListener('click', () => document.forms[1].submit());
+        targetDiv1.appendChild(newButtonReset);
+    }
 };
 
 const autoFillForm = () => {
@@ -193,6 +202,8 @@ const autoFillForm = () => {
         selectSpan('is', 'telefone')
         selectSpan('is', 'abertura de pre-os')
         selectSpan('is', 'crp')
+        selectSpan('is', 'cliente')
+        selectSpan('is', 'pac')
         selectSpan('is', 'fabrica - falha do produto')
     }, 200)
 }

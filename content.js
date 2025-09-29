@@ -130,12 +130,29 @@ const noSN = (ev) => {
     today()
 }
 
+const dropped = () => {
+    const comment = document.querySelector('textarea#atendimento_ComentChamada')
+    if (!!comment && (!comment.value.toLowerCase().includes('caiu') && !comment.value.toLowerCase().includes('Muda'))) {
+        comment.value += 'Ligação caiu / Muda'
+        selectSpan('has', 'caiu/muda')
+        today()
+    }
+}
+
 const createButtons = () => {
     /**
      * Cria botões extras na interface para ações rápidas
      **/
     const targetDiv = document.querySelector('#div_dadosChamada .card-title div');
     if (!!targetDiv) {
+
+        const newButtonCaiu = document.createElement('button');
+        newButtonCaiu.style.marginLeft = '4px';
+        newButtonCaiu.textContent = 'Caiu/Muda';
+        newButtonCaiu.className = 'btn btn-blue';
+        newButtonCaiu.addEventListener('click', dropped);
+        targetDiv.insertBefore(newButtonCaiu, targetDiv.firstChild);
+
         const newButtonGarantia = document.createElement('button');
         newButtonGarantia.style.marginLeft = '4px';
         newButtonGarantia.textContent = 'Garantia';
@@ -159,6 +176,7 @@ const createButtons = () => {
         newButtonReset.addEventListener('click', () => document.forms[1].submit());
         targetDiv1.appendChild(newButtonReset);
     }
+    document.querySelector('#ligacaoCaiu').remove()
 };
 
 const autoFillForm = () => {

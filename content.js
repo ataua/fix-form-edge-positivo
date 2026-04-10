@@ -1,16 +1,3 @@
-const formFields = {
-    /**
-     * Adicione seus seletores de campo de formulário e valores padrão aqui
-     **/ 
-    'input#nomeCliente': 'Não informado',
-    'input#mailCliente': 'sememail@positivo.com.br',
-    'input#rgCliente': '0',
-    'input#valor': 30,
-    'input#nfCompra': 0,
-    'textarea#atendimento_ComentTroca': 'Troca direta',
-    'textarea#atendimento_ComentChamada': '> Sintomas:\n- \n\n> Ações:\n- \n\n> Solução:\n- '
-};
-
 const selectSpan = (relation, text) => {
     /**
      * clica no span que tem conteúdo textual buscado
@@ -47,13 +34,15 @@ const noZeroCPF = () => {
 const today = () => document.querySelector('input#dataCompra').value = document.querySelector('input#numDiasPend').value
 
 
-const fixWidth = () => {
+const fixView = () => {
     /**
-     * Remove classes que limitam a largura do formulário
+     * Ajustes visuais na interface
      */
     ['col-lg-offset-1', 'col-lg-10'].forEach(cl => document.querySelectorAll(`.${cl}`).forEach(c => c.classList.remove(cl)))
     const tt = document.querySelector('.card-title>div')
-    if (!!tt) tt.style.width = ''
+    if (!!tt) tt.style.width = 'fit-content'
+    const btnNew = document.querySelector('#continuar');
+    if (!!btnNew) btnNew.style.marginBottom = '6rem';
 }
 
 const checkName = ({ target }) => {
@@ -70,14 +59,6 @@ const checkName = ({ target }) => {
         }
     }
 }
-
-const setSintoma = () => {
-    /**
-     * Define o sintoma como "danificado" ao clicar no botão de ligação caiu / muda
-     **/
-    document.querySelector('#ligacaoCaiu')?.addEventListener('click', ()=>selectSpan('is', 'danificado'))
-}
-
 
 const checkIsOnSite = () => {
     /**
@@ -119,14 +100,12 @@ const noSN = (ev) => {
     ev.preventDefault()
     setTimeout(()=>{
         selectSpan('has', 'e0025')
-        selectSpan('is', 'dados insuficientes')
-        selectSpan('is', 'não identificado')
+        selectSpan('is', 'dados insuficientes para atendimento')
     }, 1100)
     const comment = document.querySelector('textarea#atendimento_ComentChamada')
     if (!!comment && (!comment.value.toLowerCase().includes('sem ns'))) {
         comment.value += 'Sem NS\n- Sem aparelho em mãos'
     } 
-    selectSpan('is', 'não identificado')
     today()
 }
 
@@ -176,7 +155,20 @@ const createButtons = () => {
         newButtonReset.addEventListener('click', () => document.forms[1].submit());
         targetDiv1.appendChild(newButtonReset);
     }
-    document.querySelector('#ligacaoCaiu').remove()
+    document.querySelector('#ligacaoCaiu')?.remove()
+};
+
+const formFields = {
+    /**
+     * Adicione seus seletores de campo de formulário e valores padrão aqui
+     **/ 
+    // 'input#nomeCliente': 'Não informado',
+    'input#mailCliente': 'sememail@positivo.com.br',
+    'input#rgCliente': '0',
+    'input#valor': 30,
+    'input#nfCompra': 0,
+    'textarea#atendimento_ComentTroca': 'Troca direta',
+    'textarea#atendimento_ComentChamada': '> Sintomas:\n- \n\n> Ações:\n- \n\n> Solução:\n- '
 };
 
 const autoFillForm = () => {
@@ -188,32 +180,21 @@ const autoFillForm = () => {
     for (const [selector, defaultValue] of Object.entries(formFields)) {
         const field = document.querySelector(selector);
         if (!!field) {
+            
             if (!String(field.value).trim().length) {
                 field.value = defaultValue;
             }
 
-            if (field.id == 'nomeCliente') {
-                field.addEventListener('change', checkName)
-            } else if (field.id == 'atendimento_ComentChamada') {
-                field.rows = 12
-            } else {
-                field.addEventListener('change', () => {
-                    if (!String(field.value).trim().length) {
-                        field.value = defaultValue;
-                    }
-                })
-            }
+            field.addEventListener('change', () => {
+                if (!String(field.value).trim().length) {
+                    field.value = defaultValue;
+                }
+            })
+
+            if (field.id == 'atendimento_ComentChamada') field.rows = 12;
+            // else if (field.id == 'nomeCliente') field.addEventListener('change', checkName)
         }
     }
-
-    document.querySelector('#ligacaoCaiu')?.addEventListener('click', ()=>{
-        const comment = document.querySelector('textarea#atendimento_ComentChamada')
-        if (!!comment && (!comment.value.toLowerCase().includes('caiu'))) {
-            comment.value += '\n- Ligação muda / caiu'
-        }
-        today()
-        selectSpan('is', 'não identificado')
-    })
 
     // Espera um pouco para garantir a atualização do DOM
     setTimeout(() => {
@@ -223,12 +204,12 @@ const autoFillForm = () => {
         selectSpan('is', 'cliente')
         selectSpan('is', 'pac')
         selectSpan('is', 'fabrica - falha do produto')
-    }, 200)
+    }, 300)
 }
 
 const run = () => {
     autoFillForm();
-    fixWidth();
+    fixView();
     noZeroCPF()
     createButtons();
     checkIsOnSite();

@@ -39,6 +39,8 @@ const fixView = () => {
      * Ajustes visuais na interface
      */
     ['col-lg-offset-1', 'col-lg-10'].forEach(cl => document.querySelectorAll(`.${cl}`).forEach(c => c.classList.remove(cl)))
+    Array.from(document.querySelectorAll('.form-group')).forEach(el => el.style.marginBottom = "5px");
+    Array.from(document.querySelectorAll('.form-group label')).forEach(el => el.style.marginBottom = "0");
     const tt = document.querySelector('.card-title>div')
     if (!!tt) tt.style.width = 'fit-content'
     const btnNew = document.querySelector('#continuar');
